@@ -1,0 +1,22 @@
+.customModalForm {
+  background: #fff;
+  width: 500px;
+  border-radius: 10px;
+  padding: 20px 30px;
+  margin-top: 150px;
+  /* height: 570px; */
+}
+
+.modal-title {
+  padding: 10px 0;
+  color: #212529;
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
+.customClose {
+  padding: 10px 0;
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+}

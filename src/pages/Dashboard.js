@@ -114,12 +114,12 @@ const Dashboard = () => {
           </div>
 
           <div className="content">
-            {videos.length && (
+            {videos.length ? (
               <Card
                 onClick={() => window.open(videos[0].player_uri, "_blank")}
                 title={videos[0].id.slice(6, 10)}
               />
-            )}
+            ) : null}
             <Card />
             <Card />
             <Card />

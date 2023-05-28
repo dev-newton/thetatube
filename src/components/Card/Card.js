@@ -6,8 +6,9 @@ import {
 import { Avatar, Card as Card_ } from "antd";
 const { Meta } = Card_;
 
-const Card = ({ label, withButton = false }) => (
+const Card = ({ label, withButton = false, title, onClick }) => (
   <Card_
+    onClick={onClick}
     hoverable
     style={{ position: "relative" }}
     cover={
@@ -22,7 +23,7 @@ const Card = ({ label, withButton = false }) => (
     //   <EllipsisOutlined key="ellipsis" />,
     // ]}
   >
-    <Meta title="Video title 1" description="Author: Test Author" />
+    <Meta title={`Video ${title || "001"}`} description="Author: Test Author" />
     {withButton && <button className="btn-card">{label}</button>}
   </Card_>
 );

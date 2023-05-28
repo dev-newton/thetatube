@@ -50,7 +50,12 @@ const Login = (props) => {
       <div className="login-wrapper">
         <h1 className="header-nav lg">ThetaTube</h1>
         <div className="form-wrapper">
-          <h3 className="header-nav">Login</h3>
+          <b>
+            Kindly login with Email:<span>testuser@gmail.com</span> and
+            password:
+            <span>test</span>
+          </b>
+          <h3 className="header-nav log">Login</h3>
           <form onSubmit={handleSubmit}>
             <Input
               label="Email"

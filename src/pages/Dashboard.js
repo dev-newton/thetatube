@@ -7,12 +7,41 @@ import Navbar from "../components/Navbar/Navbar";
 import Card from "../components/Card/Card";
 import Button from "../components/Button/Button";
 
+import Modal from "react-modal";
+import { AiOutlineClose } from "react-icons/ai";
+
+const customStyles = {
+  content: {
+    top: "45%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    border: "none",
+    width: "935px",
+    padding: "0",
+  },
+  overlay: {
+    zIndex: 33,
+  },
+};
+
 const Dashboard = () => {
   const [file, setFile] = useState();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [isOpen, setOpen] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   const { REACT_APP_API_URL } = process.env;
 
@@ -36,12 +65,18 @@ const Dashboard = () => {
     }
   };
 
+  const openvid = () => {
+    openModal();
+  };
+
   const handleUploadClick = () => {
     setLoading(true);
     if (!file) {
       setLoading(false);
       return;
     }
+
+    openModal();
 
     const formData = new FormData();
     formData.append("theta-api-key", "srvacc_cc55yrv86dh8x5n2wygu4ipm1");
@@ -81,6 +116,7 @@ const Dashboard = () => {
   };
   return (
     <>
+      {console.log(222, file)}
       <Navbar />
       <div className="dashboard">
         <div className="top">
@@ -111,16 +147,53 @@ const Dashboard = () => {
             <div></div>
             <label class="custom-file-upload">
               <input type="file" onChange={handleFileChange} />
-              {loading ? "Uploading..." : "Upload new content"}
+              Upload new content
             </label>
           </div>
+          {/* 
+          <button onClick={openModal}>Open Modal</button> */}
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+            shouldCloseOnOverlayClick={false}
+          >
+            <div className="modall">
+              {loading ? (
+                <>
+                  <div class="lds-spinner">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <h2>Upload in progress...</h2>
+                </>
+              ) : null}
+              <AiOutlineClose className="close-icon" onClick={closeModal} />
+              {!loading && videos.length ? (
+                <iframe
+                  src={videos[0].player_uri}
+                  frameborder="0"
+                  allowFullScreen
+                  className="iframe"
+                ></iframe>
+              ) : null}
+            </div>
+          </Modal>
 
           <div className="content">
             {videos.length ? (
-              <Card
-                onClick={() => window.open(videos[0].player_uri, "_blank")}
-                title={videos[0].id.slice(6, 10)}
-              />
+              <Card onClick={openvid} title={videos[0].id.slice(6, 10)} />
             ) : null}
             <Card />
             <Card />

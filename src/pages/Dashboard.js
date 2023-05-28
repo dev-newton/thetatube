@@ -14,6 +14,8 @@ const Dashboard = () => {
 
   const [isOpen, setOpen] = useState(false);
 
+  const { REACT_APP_API_URL } = process.env;
+
   useEffect(() => {
     handleUploadClick();
   }, [file]);
@@ -52,7 +54,7 @@ const Dashboard = () => {
     formData.append("files", file);
 
     // 👇 Uploading the file using the fetch API to the server
-    fetch("http://176.58.112.234:9000/theta/bulkupload/main", {
+    fetch(REACT_APP_API_URL, {
       method: "POST",
       body: formData,
     })

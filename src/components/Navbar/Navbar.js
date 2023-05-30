@@ -25,7 +25,7 @@ const Navbar = () => {
             <li
               key={i}
               className={item.cName}
-              onClick={item.title === "Logout" && handleLogout}
+              onClick={item.title === "Logout" ? handleLogout : null}
             >
               <Link
                 className={`${

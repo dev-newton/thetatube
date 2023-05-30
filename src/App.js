@@ -1,5 +1,10 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  redirect,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 
 import Dashboard from "./pages/Dashboard";
@@ -9,7 +14,26 @@ import Register from "./pages/Register";
 import BuyContent from "./pages/BuyContent";
 import PurchasedContent from "./pages/PurchasedContent";
 
+import { supabase } from "./supabaseClient";
+import { useEffect, useState } from "react";
+
 function App() {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  // if (!session) {
+  //   return redirect("/");
+  // }
+
   return (
     <>
       <Provider store={store}>

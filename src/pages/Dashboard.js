@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ImVideoCamera } from "react-icons/im";
+import { ImHome3, ImVideoCamera } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,6 +9,10 @@ import Button from "../components/Button/Button";
 
 import Modal from "react-modal";
 import { AiOutlineClose } from "react-icons/ai";
+
+import { supabase } from "../supabaseClient";
+import Input from "../components/Input/Input";
+import { redirect, useNavigate } from "react-router-dom";
 
 const customStyles = {
   content: {
@@ -28,12 +32,64 @@ const customStyles = {
   },
 };
 
+const customStyles1 = {
+  content: {
+    top: "45%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+    border: "none",
+    width: "535px",
+    padding: "0",
+  },
+  overlay: {
+    zIndex: 33,
+  },
+};
+
 const Dashboard = () => {
   const [file, setFile] = useState();
+  const [title, setTitle] = useState("");
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalIsOpen1, setIsOpen1] = useState(false);
+  const [modalIsOpen2, setIsOpen2] = useState(false);
+  const [currentVid, setCurrentVid] = useState("");
+
+  const [session, setSession] = useState(null);
+
+  const { REACT_APP_API_URL } = process.env;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  useEffect(() => {
+    getVideos();
+  }, []);
+
+  const getVideos = async () => {
+    const { data, error } = await supabase.from("my_videos").select();
+
+    if (error) {
+      return console.log(error);
+    }
+
+    setVideos(data);
+  };
 
   const openModal = () => {
     setIsOpen(true);
@@ -43,21 +99,21 @@ const Dashboard = () => {
     setIsOpen(false);
   };
 
-  const { REACT_APP_API_URL } = process.env;
+  const openModal1 = () => {
+    setIsOpen1(true);
+  };
 
-  useEffect(() => {
-    handleUploadClick();
-  }, [file]);
+  const closeModal1 = () => {
+    setIsOpen1(false);
+  };
 
-  const videosLocal =
-    localStorage.getItem("videos") &&
-    JSON.parse(localStorage.getItem("videos"));
+  const openModal2 = () => {
+    setIsOpen2(true);
+  };
 
-  useEffect(() => {
-    if (videosLocal) {
-      setVideos(videosLocal);
-    }
-  }, []);
+  const closeModal2 = () => {
+    setIsOpen2(false);
+  };
 
   const handleFileChange = (e) => {
     if (e.target.files) {
@@ -65,18 +121,39 @@ const Dashboard = () => {
     }
   };
 
-  const openvid = () => {
-    openModal();
+  const openvid = (player_uri) => {
+    setCurrentVid(player_uri);
+    openModal2();
   };
 
   const handleUploadClick = () => {
-    setLoading(true);
-    if (!file) {
-      setLoading(false);
-      return;
+    if (!title) {
+      return toast.error("Title cannot be empty!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        progress: undefined,
+      });
     }
 
+    if (!file) {
+      return toast.error("No file selected, please select a file!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        progress: undefined,
+      });
+    }
+
+    closeModal1();
     openModal();
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("theta-api-key", "srvacc_cc55yrv86dh8x5n2wygu4ipm1");
@@ -95,28 +172,49 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setLoading(false);
+        // setVideos(data.data);
+        // localStorage.setItem("videos", JSON.stringify(data.data));
 
-        setVideos(data.data);
-        localStorage.setItem("videos", JSON.stringify(data.data));
-        return toast.success("Upload successful!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          pauseOnFocusLoss: false,
-          progress: undefined,
-        });
+        postVideo(title, data.data[0].player_uri);
       })
       .catch((err) => {
         setLoading(false);
         console.error(err);
       });
   };
+
+  const postVideo = async (title, player_uri) => {
+    const { error } = await supabase
+      .from("my_videos")
+      .insert({ title, player_uri, created_by: session?.user.email });
+
+    if (error) {
+      setLoading(false);
+      return console.log(error);
+    }
+
+    setLoading(false);
+    openvid(player_uri);
+    closeModal();
+    getVideos();
+    return toast.success("Upload successful!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      progress: undefined,
+    });
+  };
+
+  if (!session) {
+    navigate("/");
+  }
+
   return (
     <>
-      {console.log(222, file)}
+      {console.log(session)}
       <Navbar />
       <div className="dashboard">
         <div className="top">
@@ -145,13 +243,36 @@ const Dashboard = () => {
         <div className="bottom">
           <div className="btn-wrapper">
             <div></div>
-            <label class="custom-file-upload">
-              <input type="file" onChange={handleFileChange} />
-              Upload new content
-            </label>
+            <Button label="Upload new video" onClick={openModal1} />
           </div>
-          {/* 
-          <button onClick={openModal}>Open Modal</button> */}
+          <Modal
+            isOpen={modalIsOpen1}
+            onRequestClose={closeModal1}
+            style={customStyles1}
+            contentLabel="Example Modal"
+            shouldCloseOnOverlayClick={false}
+          >
+            <div className="modall-form">
+              <h2>Upload new video</h2>
+              <Input label="Title" onChange={(e) => setTitle(e.target.value)} />
+              <label className="label" style={{ display: "block" }}>
+                Video:
+              </label>
+              <label className="custom-file-upload">
+                <input type="file" onChange={handleFileChange} />
+                Select video
+              </label>
+              &nbsp;
+              {file ? file.name : null}
+              <br /> <br />
+              <br />
+              <Button
+                style={{ width: "100%" }}
+                label="Upload"
+                onClick={handleUploadClick}
+              />
+            </div>
+          </Modal>
           <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
@@ -162,7 +283,7 @@ const Dashboard = () => {
             <div className="modall">
               {loading ? (
                 <>
-                  <div class="lds-spinner">
+                  <div className="lds-spinner">
                     <div></div>
                     <div></div>
                     <div></div>
@@ -180,29 +301,42 @@ const Dashboard = () => {
                 </>
               ) : null}
               <AiOutlineClose className="close-icon" onClick={closeModal} />
-              {!loading && videos.length ? (
-                <iframe
-                  src={videos[0].player_uri}
-                  frameborder="0"
-                  allowFullScreen
-                  className="iframe"
-                ></iframe>
-              ) : null}
+            </div>
+          </Modal>
+          <Modal
+            isOpen={modalIsOpen2}
+            onRequestClose={closeModal2}
+            style={customStyles}
+            contentLabel="Example Modal"
+            shouldCloseOnOverlayClick={false}
+          >
+            <div className="modall">
+              <AiOutlineClose className="close-icon" onClick={closeModal2} />
+              <iframe
+                src={currentVid}
+                frameBorder="0"
+                allowFullScreen
+                className="iframe"
+              ></iframe>
             </div>
           </Modal>
 
           <div className="content">
-            {videos.length ? (
-              <Card onClick={openvid} title={videos[0].id.slice(6, 10)} />
-            ) : null}
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {videos.length
+              ? videos.map((vid) => (
+                  <Card
+                    onClick={() => openvid(vid.player_uri)}
+                    title={vid.title}
+                    author={vid.created_by}
+                  />
+                ))
+              : null}
           </div>
+          {!videos.length ? (
+            <h2 style={{ textAlign: "center" }}>
+              No Videos have been uploaded!
+            </h2>
+          ) : null}
         </div>
       </div>
 

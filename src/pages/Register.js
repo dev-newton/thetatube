@@ -2,17 +2,52 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Input from "../components/Input/Input";
+
+import { supabase } from "../supabaseClient";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      setLoading(false);
+      console.log("ERROR:", error.message);
+      return toast.error(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        progress: undefined,
+      });
+    }
+
+    setLoading(false);
+    toast.success("Registration successful!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      progress: undefined,
+    });
+
     navigate("/profile");
   };
 
@@ -35,7 +70,7 @@ const Register = () => {
             />
             <div className="btn-wrapper">
               <button type="submit" className="login-button">
-                Register
+                {loading ? "Please wait..." : "Register"}
               </button>
             </div>
             <p>

@@ -5,7 +5,7 @@ const Input = (props) => {
   return (
     <div className="f-group">
       <label className="label">{label}:</label>
-      <input className="input-lg" {...props} />
+      <input className="input-sm" {...props} />
     </div>
   );
 };

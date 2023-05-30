@@ -2,45 +2,50 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Input from "../components/Input/Input";
+
+import { supabase } from "../supabaseClient";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  // const authenticate = (data) => {
-  //   if (data.email !== "newton@test.com" || data.password !== "123456") {
-  //     return toast.error("Email/Password is icorrect", {
-  //       position: "top-right",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: false,
-  //       pauseOnFocusLoss: false,
-  //       progress: undefined,
-  //     });
-  //   }
-
-  //   localStorage.token = process.env.REACT_APP_AUTH_TOKEN;
-  //   setTimeout(triggerLogout, 600000);
-  //   props.history.push("/dashboard");
-  // };
-
-  // const triggerLogout = () => {
-  //   localStorage.removeItem("token");
-  //   window.location.href = "/";
-  //   alert("Your token has expired, please login again");
-  // };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
+
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    };
+    });
+
+    if (error) {
+      setLoading(false);
+      console.log("ERROR:", error.message);
+      return toast.error(error.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        progress: undefined,
+      });
+    }
+    setLoading(false);
+    toast.success("Login successful!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      progress: undefined,
+    });
 
     navigate("/profile");
   };
@@ -69,7 +74,7 @@ const Login = (props) => {
             />
             <div className="btn-wrapper">
               <button type="submit" className="login-button">
-                Login
+                {loading ? "Please wait..." : "Login"}
               </button>
             </div>
             <p>

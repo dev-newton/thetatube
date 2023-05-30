@@ -58,7 +58,7 @@ const Login = (props) => {
           <b>
             Kindly login with Email:<span>testuser@gmail.com</span> and
             password:
-            <span>test</span>
+            <span>test1234</span>
           </b>
           <h3 className="header-nav log">Login</h3>
           <form onSubmit={handleSubmit}>

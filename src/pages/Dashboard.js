@@ -50,45 +50,49 @@ const customStyles1 = {
   },
 };
 
-const Dashboard = () => {
+const Dashboard = ({ session }) => {
   const [file, setFile] = useState();
   const [title, setTitle] = useState("");
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingVids, setLoadingVids] = useState(false);
 
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalIsOpen1, setIsOpen1] = useState(false);
   const [modalIsOpen2, setIsOpen2] = useState(false);
   const [currentVid, setCurrentVid] = useState("");
 
-  const [session, setSession] = useState(null);
+  // const [session, setSession] = useState(null);
 
   const { REACT_APP_API_URL } = process.env;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     setSession(session);
+  //   });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session);
+  //   });
+  // }, []);
 
   useEffect(() => {
     getVideos();
   }, []);
 
   const getVideos = async () => {
+    setLoadingVids(true);
     const { data, error } = await supabase.from("my_videos").select();
 
     if (error) {
+      setLoadingVids(false);
       return console.log(error);
     }
 
-    setVideos(data);
+    setLoadingVids(false);
+    setVideos(data.filter((vid) => vid.created_by === session?.user.email));
   };
 
   const openModal = () => {
@@ -127,6 +131,7 @@ const Dashboard = () => {
   };
 
   const handleUploadClick = () => {
+    console.log("here a");
     if (!title) {
       return toast.error("Title cannot be empty!", {
         position: "top-right",
@@ -151,8 +156,11 @@ const Dashboard = () => {
       });
     }
 
+    console.log("here b");
     closeModal1();
+    console.log("here c");
     openModal();
+    console.log("here d");
     setLoading(true);
 
     const formData = new FormData();
@@ -172,9 +180,7 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // setVideos(data.data);
-        // localStorage.setItem("videos", JSON.stringify(data.data));
-
+        console.log("here 1");
         postVideo(title, data.data[0].player_uri);
       })
       .catch((err) => {
@@ -184,6 +190,7 @@ const Dashboard = () => {
   };
 
   const postVideo = async (title, player_uri) => {
+    console.log("here 2");
     const { error } = await supabase
       .from("my_videos")
       .insert({ title, player_uri, created_by: session?.user.email });
@@ -320,10 +327,35 @@ const Dashboard = () => {
               ></iframe>
             </div>
           </Modal>
+          {loadingVids && !videos.length ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              <div className="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          ) : null}
 
           <div className="content">
             {videos.length
-              ? videos.map((vid) => (
+              ? videos.map((vid, i) => (
                   <Card
                     onClick={() => openvid(vid.player_uri)}
                     title={vid.title}
@@ -332,7 +364,8 @@ const Dashboard = () => {
                 ))
               : null}
           </div>
-          {!videos.length ? (
+
+          {!loadingVids && !videos.length ? (
             <h2 style={{ textAlign: "center" }}>
               No Videos have been uploaded!
             </h2>

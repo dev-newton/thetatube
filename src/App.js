@@ -41,7 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Dashboard />} />
+            <Route path="/profile" element={<Dashboard session={session} />} />
             <Route path="/buy-content" element={<BuyContent />} />
             <Route path="/purchased-content" element={<PurchasedContent />} />
           </Routes>

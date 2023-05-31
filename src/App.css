@@ -410,3 +410,8 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.ant-card-meta {
+  padding-bottom: 3px;
+  padding-top: 15px !important;
+}

@@ -25,10 +25,12 @@ function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      localStorage.setItem("session", JSON.stringify(session));
     });
 
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      localStorage.setItem("session", JSON.stringify(session));
     });
   }, []);
 
@@ -38,7 +40,7 @@ function App() {
         <Route path="/" element={<Login session={session} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Dashboard session={session} />} />
-        <Route path="/buy-content" element={<BuyContent />} />
+        <Route path="/buy-content" element={<BuyContent session={session} />} />
         <Route path="/purchased-content" element={<PurchasedContent />} />
       </Routes>
     </>

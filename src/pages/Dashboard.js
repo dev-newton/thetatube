@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { ImHome3, ImVideoCamera } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,7 +50,7 @@ const customStyles1 = {
   },
 };
 
-const Dashboard = ({ session }) => {
+const Dashboard = () => {
   const [file, setFile] = useState();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState();
@@ -64,6 +64,9 @@ const Dashboard = ({ session }) => {
   const [currentVid, setCurrentVid] = useState("");
 
   // const [session, setSession] = useState(null);
+  const session = JSON.parse(localStorage.getItem("session"));
+
+  // console.log(JSON.parse(localStorage.getItem("session")));
 
   const { REACT_APP_API_URL } = process.env;
 
@@ -83,7 +86,7 @@ const Dashboard = ({ session }) => {
     }
 
     setLoadingVids(false);
-    console.log(111, data);
+
     setVideos(data.filter((vid) => vid.email === session?.user.email));
   };
 
@@ -212,183 +215,182 @@ const Dashboard = ({ session }) => {
 
   return (
     <>
-      {session && (
-        <>
-          {console.log(videos)}
-          <Navbar />
-          <div className="dashboard">
-            <div className="top">
-              <div className="left-pane">
-                <p>
-                  Name: <b>{session.user.user_metadata.name}</b>
-                </p>
-                <br />
-                <p>
-                  Email: <b>{session.user.email}</b>
-                </p>
-                <br />
-                <p>
-                  Theta Address:{" "}
-                  <b>{session.user.user_metadata.theta_address}</b>
-                </p>
-                <br />
-                <p>
-                  ThetaWei:
-                  <b>
-                    {Number(
-                      session.user.user_metadata.theta_wei_balance
-                    ).toLocaleString()}
-                  </b>
-                </p>
-                <br />
-                <p>
-                  TFuelWei:
-                  <b>
-                    {Number(
-                      session.user.user_metadata.tfuel_wei_balance
-                    ).toLocaleString()}
-                  </b>
-                </p>
-              </div>
+      {/* {session && ( */}
+      <>
+        {console.log(222, videos)}
+        <Navbar />
+        <div className="dashboard">
+          <div className="top">
+            <div className="left-pane">
+              <p>
+                Name: <b>{session?.user.user_metadata.name}</b>
+              </p>
+              <br />
+              <p>
+                Email: <b>{session?.user.email}</b>
+              </p>
+              <br />
+              <p>
+                Theta Address:{" "}
+                <b>{session?.user.user_metadata.theta_address}</b>
+              </p>
+              <br />
+              <p>
+                ThetaWei:
+                <b>
+                  {Number(
+                    session?.user.user_metadata.theta_wei_balance
+                  ).toLocaleString()}
+                </b>
+              </p>
+              <br />
+              <p>
+                TFuelWei:
+                <b>
+                  {Number(
+                    session?.user.user_metadata.tfuel_wei_balance
+                  ).toLocaleString()}
+                </b>
+              </p>
             </div>
-            <div className="bottom">
-              <div className="btn-wrapper">
-                <div></div>
-                <Button label="Upload new video" onClick={openModal1} />
+          </div>
+          <div className="bottom">
+            <div className="btn-wrapper">
+              <div></div>
+              <Button label="Upload new video" onClick={openModal1} />
+            </div>
+            <Modal
+              isOpen={modalIsOpen1}
+              onRequestClose={closeModal1}
+              style={customStyles1}
+              contentLabel="Example Modal"
+              shouldCloseOnOverlayClick={false}
+            >
+              <div className="modall-form">
+                <h2>Upload new video</h2>
+                <Input
+                  label="Title"
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <Input
+                  label="Price (Theta)"
+                  type="number"
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                <label className="label" style={{ display: "block" }}>
+                  Video:
+                </label>
+                <label className="custom-file-upload">
+                  <input type="file" onChange={handleFileChange} />
+                  Select video
+                </label>
+                &nbsp;
+                {file ? file.name : null}
+                <br /> <br />
+                <br />
+                <Button
+                  style={{ width: "100%" }}
+                  label="Upload"
+                  onClick={handleUploadClick}
+                />
               </div>
-              <Modal
-                isOpen={modalIsOpen1}
-                onRequestClose={closeModal1}
-                style={customStyles1}
-                contentLabel="Example Modal"
-                shouldCloseOnOverlayClick={false}
+            </Modal>
+            <Modal
+              isOpen={modalIsOpen}
+              onRequestClose={closeModal}
+              style={customStyles}
+              contentLabel="Example Modal"
+              shouldCloseOnOverlayClick={false}
+            >
+              <div className="modall">
+                {loading ? (
+                  <>
+                    <div className="lds-spinner">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    <h2>Upload in progress...</h2>
+                  </>
+                ) : null}
+                <AiOutlineClose className="close-icon" onClick={closeModal} />
+              </div>
+            </Modal>
+            <Modal
+              isOpen={modalIsOpen2}
+              onRequestClose={closeModal2}
+              style={customStyles}
+              contentLabel="Example Modal"
+              shouldCloseOnOverlayClick={false}
+            >
+              <div className="modall">
+                <AiOutlineClose className="close-icon" onClick={closeModal2} />
+                <iframe
+                  src={currentVid}
+                  frameBorder="0"
+                  allowFullScreen
+                  className="iframe"
+                ></iframe>
+              </div>
+            </Modal>
+            {loadingVids && !videos.length ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
               >
-                <div className="modall-form">
-                  <h2>Upload new video</h2>
-                  <Input
-                    label="Title"
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                  <Input
-                    label="Price (Theta)"
-                    type="number"
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                  <label className="label" style={{ display: "block" }}>
-                    Video:
-                  </label>
-                  <label className="custom-file-upload">
-                    <input type="file" onChange={handleFileChange} />
-                    Select video
-                  </label>
-                  &nbsp;
-                  {file ? file.name : null}
-                  <br /> <br />
-                  <br />
-                  <Button
-                    style={{ width: "100%" }}
-                    label="Upload"
-                    onClick={handleUploadClick}
-                  />
+                <div className="lds-spinner">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
                 </div>
-              </Modal>
-              <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Example Modal"
-                shouldCloseOnOverlayClick={false}
-              >
-                <div className="modall">
-                  {loading ? (
-                    <>
-                      <div className="lds-spinner">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                      </div>
-                      <h2>Upload in progress...</h2>
-                    </>
-                  ) : null}
-                  <AiOutlineClose className="close-icon" onClick={closeModal} />
-                </div>
-              </Modal>
-              <Modal
-                isOpen={modalIsOpen2}
-                onRequestClose={closeModal2}
-                style={customStyles}
-                contentLabel="Example Modal"
-                shouldCloseOnOverlayClick={false}
-              >
-                <div className="modall">
-                  <AiOutlineClose
-                    className="close-icon"
-                    onClick={closeModal2}
-                  />
-                  <iframe
-                    src={currentVid}
-                    frameBorder="0"
-                    allowFullScreen
-                    className="iframe"
-                  ></iframe>
-                </div>
-              </Modal>
-              {loadingVids && !videos.length ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  <div className="lds-spinner">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="content">
-                {videos.length
-                  ? videos.map((vid, i) => (
+              </div>
+            ) : null}
+            <div className="content">
+              {videos.length
+                ? videos.map((vid, i) => (
+                    <Fragment key={i}>
                       <Card
                         onClick={() => openvid(vid.player_uri)}
                         title={vid.title}
                         author={vid.created_by}
+                        price={vid.price}
                       />
-                    ))
-                  : null}
-              </div>
-
-              {!loadingVids && !videos.length ? (
-                <h2 style={{ textAlign: "center" }}>
-                  No Videos have been uploaded!
-                </h2>
-              ) : null}
+                    </Fragment>
+                  ))
+                : null}
             </div>
+
+            {!loadingVids && !videos.length ? (
+              <h2 style={{ textAlign: "center" }}>
+                No Videos have been uploaded!
+              </h2>
+            ) : null}
           </div>
-        </>
-      )}
+        </div>
+      </>
+      {/* // )} */}
       <ToastContainer
         className="toast-container"
         bodyClassName="toast-class"

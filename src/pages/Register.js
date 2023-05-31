@@ -7,20 +7,87 @@ import Input from "../components/Input/Input";
 import { supabase } from "../supabaseClient";
 
 const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const THETA_API_URL = `https://api.infstones.com/theta/mainnet/8b9f679741e34b38a0fea270d518d9d3/thetacli/rpc`;
+
+  const generateRandomNumber = () =>
+    Math.floor(Math.random() * 9) +
+    1 +
+    String(Math.floor(Math.random() * 10 ** 20)).padStart(20, "0");
+
+  const createNewKey = (e) => {
     e.preventDefault();
 
     setLoading(true);
 
+    fetch(THETA_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "thetacli.NewKey",
+        params: [{ password: "qwertyuiop" }],
+        id: 1,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        unlockKey(data.result.address);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  };
+
+  const unlockKey = (address) => {
+    fetch(THETA_API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "thetacli.UnlockKey",
+        params: [
+          {
+            address,
+            password: "qwertyuiop",
+          },
+        ],
+        id: 1,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        handleSubmit(address);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error(err);
+      });
+  };
+
+  const handleSubmit = async (address) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          name,
+          theta_address: address,
+          theta_wei_balance: generateRandomNumber(),
+          tfuel_wei_balance: generateRandomNumber(),
+        },
+      },
     });
 
     if (error) {
@@ -57,7 +124,12 @@ const Register = () => {
         <h1 className="header-nav lg">ThetaTube</h1>
         <div className="form-wrapper">
           <h3 className="header-nav">Register</h3>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={createNewKey}>
+            <Input
+              label="Name"
+              type="text"
+              onChange={(e) => setName(e.target.value)}
+            />
             <Input
               label="Email"
               type="text"

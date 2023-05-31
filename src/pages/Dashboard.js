@@ -131,7 +131,6 @@ const Dashboard = ({ session }) => {
   };
 
   const handleUploadClick = () => {
-    console.log("here a");
     if (!title) {
       return toast.error("Title cannot be empty!", {
         position: "top-right",
@@ -156,11 +155,8 @@ const Dashboard = ({ session }) => {
       });
     }
 
-    console.log("here b");
     closeModal1();
-    console.log("here c");
     openModal();
-    console.log("here d");
     setLoading(true);
 
     const formData = new FormData();
@@ -180,7 +176,6 @@ const Dashboard = ({ session }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("here 1");
         postVideo(title, data.data[0].player_uri);
       })
       .catch((err) => {
@@ -262,6 +257,11 @@ const Dashboard = ({ session }) => {
             <div className="modall-form">
               <h2>Upload new video</h2>
               <Input label="Title" onChange={(e) => setTitle(e.target.value)} />
+              <Input
+                label="Price (Theta)"
+                type="number"
+                onChange={(e) => setTitle(e.target.value)}
+              />
               <label className="label" style={{ display: "block" }}>
                 Video:
               </label>

@@ -53,6 +53,7 @@ const customStyles1 = {
 const Dashboard = ({ session }) => {
   const [file, setFile] = useState();
   const [title, setTitle] = useState("");
+  const [price, setPrice] = useState();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingVids, setLoadingVids] = useState(false);
@@ -68,16 +69,6 @@ const Dashboard = ({ session }) => {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   supabase.auth.getSession().then(({ data: { session } }) => {
-  //     setSession(session);
-  //   });
-
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     setSession(session);
-  //   });
-  // }, []);
-
   useEffect(() => {
     getVideos();
   }, []);
@@ -92,7 +83,8 @@ const Dashboard = ({ session }) => {
     }
 
     setLoadingVids(false);
-    setVideos(data.filter((vid) => vid.created_by === session?.user.email));
+    console.log(111, data);
+    setVideos(data.filter((vid) => vid.email === session?.user.email));
   };
 
   const openModal = () => {
@@ -186,9 +178,13 @@ const Dashboard = ({ session }) => {
 
   const postVideo = async (title, player_uri) => {
     console.log("here 2");
-    const { error } = await supabase
-      .from("my_videos")
-      .insert({ title, player_uri, created_by: session?.user.email });
+    const { error } = await supabase.from("my_videos").insert({
+      title,
+      price,
+      player_uri,
+      created_by: session?.user.user_metadata.name,
+      email: session?.user.email,
+    });
 
     if (error) {
       setLoading(false);
@@ -210,86 +206,151 @@ const Dashboard = ({ session }) => {
     });
   };
 
-  if (!session) {
-    navigate("/");
-  }
+  // if (!session) {
+  //   navigate("/");
+  // }
 
   return (
     <>
-      {console.log(session)}
-      <Navbar />
-      <div className="dashboard">
-        <div className="top">
-          <div className="left-pane">
-            <p>
-              Name: <b>Test User</b>
-            </p>
-            <br />
-            <p>
-              Email: <b>testuser@gmail.com</b>
-            </p>
-            <br />
-            <p>
-              Theta Address: <b>0x2E833968E5bB786Ae419c4d13189fB081Cc43bab</b>
-            </p>
-            <br />
-            <p>
-              ThetaWei: <b>994999990000000000000000000</b>
-            </p>
-            <br />
-            <p>
-              TFuelWei: <b>4999999979999999000000000000</b>
-            </p>
-          </div>
-        </div>
-        <div className="bottom">
-          <div className="btn-wrapper">
-            <div></div>
-            <Button label="Upload new video" onClick={openModal1} />
-          </div>
-          <Modal
-            isOpen={modalIsOpen1}
-            onRequestClose={closeModal1}
-            style={customStyles1}
-            contentLabel="Example Modal"
-            shouldCloseOnOverlayClick={false}
-          >
-            <div className="modall-form">
-              <h2>Upload new video</h2>
-              <Input label="Title" onChange={(e) => setTitle(e.target.value)} />
-              <Input
-                label="Price (Theta)"
-                type="number"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <label className="label" style={{ display: "block" }}>
-                Video:
-              </label>
-              <label className="custom-file-upload">
-                <input type="file" onChange={handleFileChange} />
-                Select video
-              </label>
-              &nbsp;
-              {file ? file.name : null}
-              <br /> <br />
-              <br />
-              <Button
-                style={{ width: "100%" }}
-                label="Upload"
-                onClick={handleUploadClick}
-              />
+      {session && (
+        <>
+          {console.log(videos)}
+          <Navbar />
+          <div className="dashboard">
+            <div className="top">
+              <div className="left-pane">
+                <p>
+                  Name: <b>{session.user.user_metadata.name}</b>
+                </p>
+                <br />
+                <p>
+                  Email: <b>{session.user.email}</b>
+                </p>
+                <br />
+                <p>
+                  Theta Address:{" "}
+                  <b>{session.user.user_metadata.theta_address}</b>
+                </p>
+                <br />
+                <p>
+                  ThetaWei:
+                  <b>
+                    {Number(
+                      session.user.user_metadata.theta_wei_balance
+                    ).toLocaleString()}
+                  </b>
+                </p>
+                <br />
+                <p>
+                  TFuelWei:
+                  <b>
+                    {Number(
+                      session.user.user_metadata.tfuel_wei_balance
+                    ).toLocaleString()}
+                  </b>
+                </p>
+              </div>
             </div>
-          </Modal>
-          <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
-            shouldCloseOnOverlayClick={false}
-          >
-            <div className="modall">
-              {loading ? (
-                <>
+            <div className="bottom">
+              <div className="btn-wrapper">
+                <div></div>
+                <Button label="Upload new video" onClick={openModal1} />
+              </div>
+              <Modal
+                isOpen={modalIsOpen1}
+                onRequestClose={closeModal1}
+                style={customStyles1}
+                contentLabel="Example Modal"
+                shouldCloseOnOverlayClick={false}
+              >
+                <div className="modall-form">
+                  <h2>Upload new video</h2>
+                  <Input
+                    label="Title"
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <Input
+                    label="Price (Theta)"
+                    type="number"
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                  <label className="label" style={{ display: "block" }}>
+                    Video:
+                  </label>
+                  <label className="custom-file-upload">
+                    <input type="file" onChange={handleFileChange} />
+                    Select video
+                  </label>
+                  &nbsp;
+                  {file ? file.name : null}
+                  <br /> <br />
+                  <br />
+                  <Button
+                    style={{ width: "100%" }}
+                    label="Upload"
+                    onClick={handleUploadClick}
+                  />
+                </div>
+              </Modal>
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+                shouldCloseOnOverlayClick={false}
+              >
+                <div className="modall">
+                  {loading ? (
+                    <>
+                      <div className="lds-spinner">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      <h2>Upload in progress...</h2>
+                    </>
+                  ) : null}
+                  <AiOutlineClose className="close-icon" onClick={closeModal} />
+                </div>
+              </Modal>
+              <Modal
+                isOpen={modalIsOpen2}
+                onRequestClose={closeModal2}
+                style={customStyles}
+                contentLabel="Example Modal"
+                shouldCloseOnOverlayClick={false}
+              >
+                <div className="modall">
+                  <AiOutlineClose
+                    className="close-icon"
+                    onClick={closeModal2}
+                  />
+                  <iframe
+                    src={currentVid}
+                    frameBorder="0"
+                    allowFullScreen
+                    className="iframe"
+                  ></iframe>
+                </div>
+              </Modal>
+              {loadingVids && !videos.length ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    textAlign: "center",
+                  }}
+                >
                   <div className="lds-spinner">
                     <div></div>
                     <div></div>
@@ -304,75 +365,30 @@ const Dashboard = ({ session }) => {
                     <div></div>
                     <div></div>
                   </div>
-                  <h2>Upload in progress...</h2>
-                </>
+                </div>
               ) : null}
-              <AiOutlineClose className="close-icon" onClick={closeModal} />
-            </div>
-          </Modal>
-          <Modal
-            isOpen={modalIsOpen2}
-            onRequestClose={closeModal2}
-            style={customStyles}
-            contentLabel="Example Modal"
-            shouldCloseOnOverlayClick={false}
-          >
-            <div className="modall">
-              <AiOutlineClose className="close-icon" onClick={closeModal2} />
-              <iframe
-                src={currentVid}
-                frameBorder="0"
-                allowFullScreen
-                className="iframe"
-              ></iframe>
-            </div>
-          </Modal>
-          {loadingVids && !videos.length ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-              }}
-            >
-              <div className="lds-spinner">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+
+              <div className="content">
+                {videos.length
+                  ? videos.map((vid, i) => (
+                      <Card
+                        onClick={() => openvid(vid.player_uri)}
+                        title={vid.title}
+                        author={vid.created_by}
+                      />
+                    ))
+                  : null}
               </div>
+
+              {!loadingVids && !videos.length ? (
+                <h2 style={{ textAlign: "center" }}>
+                  No Videos have been uploaded!
+                </h2>
+              ) : null}
             </div>
-          ) : null}
-
-          <div className="content">
-            {videos.length
-              ? videos.map((vid, i) => (
-                  <Card
-                    onClick={() => openvid(vid.player_uri)}
-                    title={vid.title}
-                    author={vid.created_by}
-                  />
-                ))
-              : null}
           </div>
-
-          {!loadingVids && !videos.length ? (
-            <h2 style={{ textAlign: "center" }}>
-              No Videos have been uploaded!
-            </h2>
-          ) : null}
-        </div>
-      </div>
-
+        </>
+      )}
       <ToastContainer
         className="toast-container"
         bodyClassName="toast-class"

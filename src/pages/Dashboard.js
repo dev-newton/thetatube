@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [modalIsOpen1, setIsOpen1] = useState(false);
   const [modalIsOpen2, setIsOpen2] = useState(false);
   const [currentVid, setCurrentVid] = useState("");
+  const [fileError, setFileError] = useState(null);
 
   const session = JSON.parse(localStorage.getItem("session"));
   const theta_video_url = "https://player.thetavideoapi.com/video";
@@ -97,6 +98,7 @@ const Dashboard = () => {
   };
 
   const openModal1 = () => {
+    setFileError(null);
     setIsOpen1(true);
   };
 
@@ -113,8 +115,16 @@ const Dashboard = () => {
   };
 
   const handleFileChange = (e) => {
+    setFileError(null);
     if (e.target.files) {
-      setFile(e.target.files[0]);
+      const file_ = e.target.files[0];
+
+      if (file_.size / 10000 > 2000) {
+        return setFileError(
+          "Video cannot be more than 20mb, please select a different video and try again!"
+        );
+      }
+      setFile(file_);
     }
   };
 
@@ -172,11 +182,12 @@ const Dashboard = () => {
       .then((data) => {
         const player_uri = `${theta_video_url}/${data.data[0].id}`;
         postVideo(title, player_uri);
+        setFile();
       })
       .catch((err) => {
         setLoading(false);
         closeModal();
-        setFile();
+
         console.error(err);
       });
   };
@@ -213,6 +224,7 @@ const Dashboard = () => {
   return (
     <>
       <>
+        {console.log(file)}
         <Navbar />
         <div className="dashboard">
           <div className="top">
@@ -262,6 +274,10 @@ const Dashboard = () => {
               shouldCloseOnOverlayClick={false}
             >
               <div className="modall-form">
+                <AiOutlineClose
+                  className="close-icon dark"
+                  onClick={closeModal1}
+                />
                 <h2>Upload new video</h2>
                 <Input
                   label="Title"
@@ -275,10 +291,21 @@ const Dashboard = () => {
                 <label className="label" style={{ display: "block" }}>
                   Video:
                 </label>
-                <label className="custom-file-upload">
+                <small style={{ color: "goldenrod" }}>
+                  Please note: We limited the file size per upload to 20MB so
+                  that we can test faster (since smaller videos transcode
+                  faster).
+                </small>
+                <label className="custom-file-upload" style={{ marginTop: 5 }}>
                   <input type="file" onChange={handleFileChange} />
                   Select video
                 </label>
+                <br />
+                {fileError ? (
+                  <small style={{ color: "red", marginLeft: 5 }}>
+                    {fileError}
+                  </small>
+                ) : null}
                 &nbsp;
                 {file ? file.name : null}
                 <br /> <br />

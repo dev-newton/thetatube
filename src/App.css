@@ -399,6 +399,11 @@ input[type="file"] {
   cursor: pointer;
 }
 
+.close-icon.dark {
+  color: grey;
+  font-size: 24px;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

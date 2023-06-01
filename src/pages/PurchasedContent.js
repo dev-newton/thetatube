@@ -25,11 +25,13 @@ const customStyles = {
   },
 };
 
-const PurchasedContent = ({ session }) => {
+const PurchasedContent = () => {
   const [videos, setVideos] = useState([]);
   const [loadingVids, setLoadingVids] = useState(false);
   const [modalIsOpen2, setIsOpen2] = useState(false);
   const [currentVid, setCurrentVid] = useState("");
+
+  const session = JSON.parse(localStorage.getItem("session"));
 
   useEffect(() => {
     getVideos();
@@ -119,7 +121,7 @@ const PurchasedContent = ({ session }) => {
             ? videos.map((vid, i) => (
                 <Fragment key={i}>
                   <Card
-                    onClick={() => openvid(vid.player_uri)}
+                    onClick={() => openvid(vid.video_url)}
                     title={vid.title}
                     author={vid.video_author_name}
                     price={vid.price}

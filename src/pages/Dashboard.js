@@ -176,6 +176,7 @@ const Dashboard = () => {
       .catch((err) => {
         setLoading(false);
         closeModal();
+        setFile();
         console.error(err);
       });
   };

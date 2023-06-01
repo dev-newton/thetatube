@@ -66,8 +66,6 @@ const Dashboard = () => {
   // const [session, setSession] = useState(null);
   const session = JSON.parse(localStorage.getItem("session"));
 
-  // console.log(JSON.parse(localStorage.getItem("session")));
-
   const { REACT_APP_API_URL } = process.env;
 
   const navigate = useNavigate();
@@ -180,7 +178,6 @@ const Dashboard = () => {
   };
 
   const postVideo = async (title, player_uri) => {
-    console.log("here 2");
     const { error } = await supabase.from("my_videos").insert({
       title,
       price,
@@ -217,7 +214,6 @@ const Dashboard = () => {
     <>
       {/* {session && ( */}
       <>
-        {console.log(222, videos)}
         <Navbar />
         <div className="dashboard">
           <div className="top">

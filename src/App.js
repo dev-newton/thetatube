@@ -41,7 +41,10 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Dashboard session={session} />} />
         <Route path="/buy-content" element={<BuyContent session={session} />} />
-        <Route path="/purchased-content" element={<PurchasedContent />} />
+        <Route
+          path="/purchased-content"
+          element={<PurchasedContent session={session} />}
+        />
       </Routes>
     </>
   );

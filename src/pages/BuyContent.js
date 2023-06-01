@@ -1,9 +1,8 @@
-import React from "react";
+import { supabase } from "../supabaseClient";
 
 import Navbar from "../components/Navbar/Navbar";
 import Card from "../components/Card/Card";
 import { useEffect, useState, Fragment } from "react";
-import { supabase } from "../supabaseClient";
 
 const BuyContent = ({ session }) => {
   const [videos, setVideos] = useState([]);
@@ -43,19 +42,21 @@ const BuyContent = ({ session }) => {
 
     if (mv_error) {
       console.error(mv_error);
-    } else {
-      console.log(otherVideos);
     }
+    // else {
+    //   console.log(otherVideos);
+    // }
 
     if (pv_error) {
       console.error(pv_error);
-    } else {
-      console.log(purchasedVideos);
     }
+    //  else {
+    //   console.log(purchasedVideos);
+    // }
     setLoadingVids(false);
 
     setVideos(notPurchasedVideoss);
-    console.log(notPurchasedVideoss);
+    // console.log(notPurchasedVideoss);
   };
   return (
     <>

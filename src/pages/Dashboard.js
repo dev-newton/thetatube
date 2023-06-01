@@ -1,5 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { ImHome3, ImVideoCamera } from "react-icons/im";
+import { Fragment, useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,7 +11,6 @@ import { AiOutlineClose } from "react-icons/ai";
 
 import { supabase } from "../supabaseClient";
 import Input from "../components/Input/Input";
-import { redirect, useNavigate } from "react-router-dom";
 
 const customStyles = {
   content: {
@@ -63,12 +61,9 @@ const Dashboard = () => {
   const [modalIsOpen2, setIsOpen2] = useState(false);
   const [currentVid, setCurrentVid] = useState("");
 
-  // const [session, setSession] = useState(null);
   const session = JSON.parse(localStorage.getItem("session"));
 
   const { REACT_APP_API_URL } = process.env;
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     getVideos();
@@ -206,13 +201,8 @@ const Dashboard = () => {
     });
   };
 
-  // if (!session) {
-  //   navigate("/");
-  // }
-
   return (
     <>
-      {/* {session && ( */}
       <>
         <Navbar />
         <div className="dashboard">
@@ -386,7 +376,6 @@ const Dashboard = () => {
           </div>
         </div>
       </>
-      {/* // )} */}
       <ToastContainer
         className="toast-container"
         bodyClassName="toast-class"

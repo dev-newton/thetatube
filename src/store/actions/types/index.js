@@ -1,2 +1,0 @@
-export const GET_WALLETS = "GET_WALLETS";
-export const GET_WALLET_TRANX = "GET_WALLET_TRANX";

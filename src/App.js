@@ -1,11 +1,5 @@
 import "./App.css";
-import {
-  Routes,
-  Route,
-  useNavigate,
-  redirect,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -15,12 +9,9 @@ import PurchasedContent from "./pages/PurchasedContent";
 
 import { supabase } from "./supabaseClient";
 import { useEffect, useState } from "react";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [session, setSession] = useState(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

@@ -29,7 +29,6 @@ const customStyles = {
 
 const BuyContent = ({ session }) => {
   const [videos, setVideos] = useState([]);
-  const [users, setUsers] = useState([]);
   const [loadingVids, setLoadingVids] = useState(false);
   const [loading, setLoading] = useState(false);
 

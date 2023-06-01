@@ -62,6 +62,7 @@ const Dashboard = () => {
   const [currentVid, setCurrentVid] = useState("");
 
   const session = JSON.parse(localStorage.getItem("session"));
+  const theta_video_url = "https://player.thetavideoapi.com/video";
 
   const {
     REACT_APP_API_URL,
@@ -149,6 +150,7 @@ const Dashboard = () => {
 
     closeModal1();
     openModal();
+
     setLoading(true);
 
     const formData = new FormData();
@@ -168,7 +170,8 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        postVideo(title, data.data[0].player_uri);
+        const player_uri = `${theta_video_url}/${data.data[0].id}`;
+        postVideo(title, player_uri);
       })
       .catch((err) => {
         setLoading(false);

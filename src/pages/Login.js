@@ -55,13 +55,13 @@ const Login = ({ session }) => {
       <div className="login-wrapper">
         <h1 className="header-nav lg">ThetaTube</h1>
         <div className="form-wrapper">
+          <h3 className="header-nav log">LOGIN</h3>
           <b>
             Kindly login with Email:<span>testuser@gmail.com</span> and
             password:
             <span>test1234</span>
           </b>
-          <h3 className="header-nav log">Login</h3>
-          <form onSubmit={handleSubmit}>
+          <form style={{ marginTop: 15 }} onSubmit={handleSubmit}>
             <Input
               label="Email"
               type="text"

@@ -8,12 +8,20 @@
   font-family: "DM Sans", sans-serif;
 }
 
+body {
+  background-color: #252a33 !important;
+}
+
 :root {
   --primary-color: #182cd1;
 }
 
 .text-primary {
   color: var(--primary-color);
+}
+
+a {
+  color: inherit;
 }
 
 li {
@@ -58,6 +66,7 @@ button {
 .buy-content,
 .purchased-content {
   color: #555;
+  color: #fff;
   margin-left: 16rem;
   padding: 130px 40px 50px;
 }
@@ -172,30 +181,37 @@ button {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: #1e222a;
   padding-left: 50px;
   padding-right: 50px;
   border-radius: 20px;
+  color: #fff;
 }
 
 .login-bg {
-  background-color: var(--primary-color);
+  /* background-color: var(--primary-color); */
   opacity: 0.8;
   width: 100%;
   height: 100vh;
   padding: 80px 0;
+  color: #555 !important;
 }
 
 .header-nav.lg {
-  font-size: 42px;
+  font-size: 46px;
+  padding-bottom: 5px;
 }
 
 .header-nav.log {
   padding-top: 0;
+  padding-bottom: 5px;
+  color: #fff;
 }
 
 .form-wrapper span {
-  background-color: #efd566;
+  background-color: var(--primary-color);
+  color: #fff;
   padding: 0 2px;
 }
 
@@ -211,7 +227,7 @@ button {
 
 .content {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 15px 0;
 }
@@ -231,6 +247,8 @@ button {
   color: #ffffff;
   font-weight: 400;
   height: 40px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .ant-card .ant-card-body {
@@ -383,6 +401,7 @@ input[type="file"] {
 
 .modall-form h2 {
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .iframe {
@@ -419,4 +438,54 @@ input[type="number"] {
 .ant-card-meta {
   padding-bottom: 3px;
   padding-top: 15px !important;
+}
+
+.ant-card {
+  background-color: transparent;
+  background-color: #1e222a;
+}
+
+.ant-card:hover {
+  background-color: var(--primary-color);
+}
+
+.ant-card:hover .btn-card {
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.ant-card .ant-card-meta-title {
+  color: #fff;
+}
+
+.ant-card .ant-card-meta-description {
+  color: #fff;
+}
+
+.ant-card-bordered {
+  border: none;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+.ant-card .ant-card-cover > * {
+  height: 150px;
+}
+
+.card-cover {
+  background-color: #000;
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  padding-top: 7%;
+  text-align: center;
+}
+
+.play-icon {
+  color: var(--primary-color);
+  font-size: 100px;
+}
+
+.lock-icon {
+  color: var(--primary-color);
+  font-size: 40px;
+  margin-top: 20px;
 }

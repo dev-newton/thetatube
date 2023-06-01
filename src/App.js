@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, redirect } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -12,6 +12,9 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [session, setSession] = useState(null);
+  const navigate = useNavigate();
+
+  const localSession = JSON.parse(localStorage.getItem("session"));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -23,6 +26,12 @@ function App() {
       setSession(session);
       localStorage.setItem("session", JSON.stringify(session));
     });
+  }, []);
+
+  useEffect(() => {
+    if (!localSession) {
+      navigate("/");
+    }
   }, []);
 
   return (

@@ -123,7 +123,7 @@ const Register = () => {
       <div className="login-wrapper">
         <h1 className="header-nav lg">ThetaTube</h1>
         <div className="form-wrapper">
-          <h3 className="header-nav">Register</h3>
+          <h3 className="header-nav log">REGISTER</h3>
           <form onSubmit={createNewKey}>
             <Input
               label="Name"

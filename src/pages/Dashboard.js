@@ -24,9 +24,12 @@ const customStyles = {
     border: "none",
     width: "935px",
     padding: "0",
+    backgroundColor: "#252a33",
+    color: "#fff !important",
   },
   overlay: {
     zIndex: 33,
+    backgroundColor: "#1e222ae8",
   },
 };
 
@@ -42,9 +45,12 @@ const customStyles1 = {
     border: "none",
     width: "535px",
     padding: "0",
+    backgroundColor: "#252a33",
+    color: "#fff !important",
   },
   overlay: {
     zIndex: 33,
+    backgroundColor: "#1e222ae8",
   },
 };
 
@@ -307,7 +313,7 @@ const Dashboard = () => {
                   </small>
                 ) : null}
                 &nbsp;
-                {file ? file.name : null}
+                {file ? <p style={{ color: "#fff" }}>{file.name}</p> : null}
                 <br /> <br />
                 <br />
                 <Button
@@ -341,7 +347,7 @@ const Dashboard = () => {
                       <div></div>
                       <div></div>
                     </div>
-                    <h2>Upload in progress...</h2>
+                    <h2 style={{ color: "#fff" }}>Upload in progress...</h2>
                   </>
                 ) : null}
                 <AiOutlineClose className="close-icon" onClick={closeModal} />

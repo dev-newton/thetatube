@@ -1,19 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { SidebarData } from "../SidebarData";
+import { supabase } from "../../supabaseClient";
 import "./Navbar.css";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const currentPath =
     location.pathname.split("/")[1] === ""
       ? "home"
       : location.pathname.split("/")[1];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      return console.log(error);
+    }
+    navigate("/");
   };
 
   return (

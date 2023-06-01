@@ -19,9 +19,12 @@ const customStyles = {
     border: "none",
     width: "935px",
     padding: "0",
+    backgroundColor: "#252a33",
+    color: "#fff !important",
   },
   overlay: {
     zIndex: 33,
+    backgroundColor: "#1e222ae8",
   },
 };
 

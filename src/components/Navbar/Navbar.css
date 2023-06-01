@@ -1,5 +1,6 @@
 .navbar {
   background-color: rgba(251, 251, 251, 1);
+  background-color: #1e222a;
   height: 80px;
   display: flex;
   justify-content: flex-start;
@@ -21,6 +22,7 @@
 
 .nav-menu {
   background-color: rgba(242, 246, 252, 1);
+  background-color: #1e222a;
   width: 16rem;
   height: 100vh;
   display: flex;
@@ -54,10 +56,12 @@
   align-items: center;
   padding: 0 16px;
   border-radius: 4px;
+  color: #fff !important;
 }
 
 .nav-text a:hover {
   background-color: #edf0f7;
+  background-color: var(--primary-color);
 }
 
 .nav-menu-items {
@@ -78,6 +82,7 @@ span {
 }
 
 .active-nav {
+  background-color: var(--primary-color);
   color: var(--primary-color) !important;
   font-weight: 700;
 }
@@ -90,6 +95,7 @@ span {
   margin-left: 16.5rem;
   font-size: 20px;
   text-transform: capitalize;
+  color: #fff;
 }
 
 .header-nav {
@@ -98,4 +104,5 @@ span {
   padding-top: 25px;
   padding-bottom: 30px;
   font-size: 2rem;
+  color: var(--primary-color);
 }

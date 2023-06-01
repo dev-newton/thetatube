@@ -63,7 +63,11 @@ const Dashboard = () => {
 
   const session = JSON.parse(localStorage.getItem("session"));
 
-  const { REACT_APP_API_URL } = process.env;
+  const {
+    REACT_APP_API_URL,
+    REACT_APP_THETA_API_KEY,
+    REACT_APP_THETA_API_SECRET,
+  } = process.env;
 
   useEffect(() => {
     getVideos();
@@ -148,8 +152,8 @@ const Dashboard = () => {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("theta-api-key", "srvacc_cc55yrv86dh8x5n2wygu4ipm1");
-    formData.append("theta-api-secret", "p5v3sz7tmkxh2zv7027g0sm2t94sc6vh");
+    formData.append("theta-api-key", REACT_APP_THETA_API_KEY);
+    formData.append("theta-api-secret", REACT_APP_THETA_API_SECRET);
     formData.append("async-flow", "false");
     formData.append(
       "webhook-url",
@@ -168,6 +172,7 @@ const Dashboard = () => {
       })
       .catch((err) => {
         setLoading(false);
+        closeModal();
         console.error(err);
       });
   };

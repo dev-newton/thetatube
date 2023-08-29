@@ -13,7 +13,7 @@ body {
 }
 
 :root {
-  --primary-color: #182cd1;
+  --primary-color: #02A29F;
 }
 
 .text-primary {
@@ -326,7 +326,7 @@ input[type="file"] {
   width: 6px;
   height: 18px;
   border-radius: 20%;
-  background: #182cd1;
+  background: #02A29F;
 }
 .lds-spinner div:nth-child(1) {
   transform: rotate(0deg);
